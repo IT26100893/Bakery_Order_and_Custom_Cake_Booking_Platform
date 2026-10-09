@@ -1,0 +1,3 @@
+CAKE|PA1B2C|Chocolate Fudge Cake|4500.0|9|Chocolate
+PASTRY|PD4E5F|Almond Croissant|350.0|40|Almond cream
+BREAD|PG7H8I|Sourdough Loaf|650.0|25|Sourdough

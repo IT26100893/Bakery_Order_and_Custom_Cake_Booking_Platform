@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('dashboard')}"></nav>
+<main>
+  <h1>Admin dashboard</h1>
+  <section class="stats">
+    <a class="stat" th:href="@{/admin/orders}"><span>New orders</span><strong th:text="${newOrders}">0</strong></a>
+    <a class="stat" th:href="@{/admin/orders}"><span>Revenue (not cancelled)</span><strong th:text="'Rs. ' + ${#numbers.formatDecimal(revenue,1,'COMMA',2,'POINT')}">Rs. 0</strong></a>
+    <a class="stat" th:href="@{/admin/bookings}"><span>Pending cake bookings</span><strong th:text="${pendingBookings}">0</strong></a>
+    <a class="stat" th:href="@{/admin/products}"><span>Products (low stock: <b th:text="${lowStock}">0</b>)</span><strong th:text="${productCount}">0</strong></a>
+    <a class="stat" th:href="@{/admin/users}"><span>Customers</span><strong th:text="${customerCount}">0</strong></a>
+  </section>
+  <section class="card">
+    <h2>Latest orders</h2>
+    <div class="wrap"><table>
+      <thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr th:each="o : ${recent}">
+          <td th:text="${o.customerName}"></td>
+          <td><div th:each="i : ${o.items}" th:text="${i.qty} + ' x ' + ${i.productName}"></div></td>
+          <td th:text="'Rs. ' + ${#numbers.formatDecimal(o.total,1,'COMMA',2,'POINT')}"></td>
+          <td><span th:class="'badge ' + ${o.status}" th:text="${o.status}"></span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p class="empty" th:if="${#lists.isEmpty(recent)}">No orders yet.</p>
+  </section>
+</main>
+</body></html>

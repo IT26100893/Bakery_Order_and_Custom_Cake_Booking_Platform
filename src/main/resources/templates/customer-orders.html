@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('My orders')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('orders')}"></nav>
+<main>
+  <h1>My orders</h1>
+  <div class="error" th:if="${error}" th:text="${error}" role="alert"></div>
+  <div class="ok" th:if="${msg}" th:text="${msg}" role="status"></div>
+  <div class="grid">
+    <section class="card">
+      <h2>Place an order</h2>
+      <form method="post" th:action="@{/customer/orders/place}">
+        <label for="productId">Product</label>
+        <select id="productId" name="productId" required>
+          <option th:each="p : ${products}" th:value="${p.id}" th:disabled="${p.stock == 0}"
+                  th:selected="${selected != null and selected == p.id}"
+                  th:text="${p.name + ' - Rs. ' + #numbers.formatDecimal(p.price,1,2) + (p.stock == 0 ? ' (sold out)' : ' (' + p.stock + ' left)')}"></option>
+        </select>
+        <label for="qty">Quantity</label>
+        <input id="qty" name="qty" type="number" min="1" value="1" required>
+        <label for="payment">Payment</label>
+        <select id="payment" name="payment">
+          <option value="CASH">Cash (no fee)</option>
+          <option value="CARD">Card (2% fee)</option>
+          <option value="ONLINE">Online (1.5% fee)</option>
+        </select>
+        <div class="form-actions"><button class="btn" type="submit">Place order</button></div>
+      </form>
+    </section>
+    <section class="card">
+      <h2>Order history</h2>
+      <div class="wrap"><table>
+        <thead><tr><th>Items</th><th>Payment</th><th>Total</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr th:each="o : ${items}">
+            <td><div th:each="i : ${o.items}" th:text="${i.qty} + ' x ' + ${i.productName}"></div></td>
+            <td th:text="${o.payment.type}"></td>
+            <td th:text="'Rs. ' + ${#numbers.formatDecimal(o.total,1,'COMMA',2,'POINT')}"></td>
+            <td><span th:class="'badge ' + ${o.status}" th:text="${o.status}"></span></td>
+            <td>
+              <form method="post" th:if="${o.status == 'PLACED'}" th:action="@{/customer/orders/cancel/{id}(id=${o.id})}" onsubmit="return confirm('Cancel this order?')">
+                <button class="btn sm ghost" type="submit">Cancel</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table></div>
+      <p class="empty" th:if="${#lists.isEmpty(items)}">You have not placed any orders yet.</p>
+    </section>
+  </div>
+</main>
+</body></html>

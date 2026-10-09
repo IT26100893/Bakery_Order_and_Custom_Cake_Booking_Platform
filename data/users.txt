@@ -1,0 +1,2 @@
+CUSTOMER|UA1000|Nimal Perera|nimal@mail.com|0771234567
+ADMIN|UB2000|Shop Admin|admin@bakery.lk|0112345678
